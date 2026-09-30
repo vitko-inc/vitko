@@ -393,11 +393,11 @@ func doctorCmd(env Env) *cli.Command {
 			} else {
 				checks = append(checks, check{Name: "config", Status: "ok", Detail: config.Path(env.Getenv)})
 			}
-			why := "not a terminal"
+			why := "stdout is not a terminal"
 			if env.StdoutIsTerminal {
-				why = "terminal"
+				why = "stdout is a terminal"
 			}
-			checks = append(checks, check{Name: "output", Status: "ok", Detail: fmt.Sprintf("%s (stdout is a %s)", c.Mode, why)})
+			checks = append(checks, check{Name: "output", Status: "ok", Detail: fmt.Sprintf("%s (%s)", c.Mode, why)})
 			if _, err := env.LookPath("git"); err != nil {
 				checks = append(checks, check{Name: "git", Status: "warn", Detail: "git is not installed", Hint: "`vitko runners repos switch --pr` needs git. Install it from https://git-scm.com."})
 			} else {
