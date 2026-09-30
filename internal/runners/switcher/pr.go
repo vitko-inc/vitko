@@ -59,7 +59,9 @@ func OpenPR(o PROptions, run sys.Exec) (*PRResult, error) {
 		return fail(StepRepo, err)
 	}
 	top = strings.TrimSpace(top)
-	if _, err := run(top, "gh", "auth", "status"); err != nil {
+	// `gh auth status` fails when any stored account is broken, even if the
+	// active one works, so ask GitHub who the active account is instead.
+	if _, err := run(top, "gh", "api", "user", "--jq", ".login"); err != nil {
 		return fail(StepAuth, err)
 	}
 	base := o.Base

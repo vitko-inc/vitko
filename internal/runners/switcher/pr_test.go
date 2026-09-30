@@ -31,8 +31,8 @@ func (f *fakeGH) exec(dir, name string, args ...string) (string, error) {
 		return sys.RealExec(dir, name, args...)
 	}
 	switch strings.Join(args[:2], " ") {
-	case "auth status":
-		return "", nil
+	case "api user":
+		return "octocat\n", nil
 	case "repo view":
 		return "main\n", nil
 	case "pr create":

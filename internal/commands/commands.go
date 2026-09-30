@@ -407,10 +407,10 @@ func doctorCmd(env Env) *cli.Command {
 			if _, err := env.LookPath("gh"); err != nil {
 				checks = append(checks, check{Name: "github_cli", Status: "warn", Detail: "the GitHub CLI (gh) is not installed",
 					Hint: "`vitko runners repos switch --pr` and `vitko runners estimate --from-github` need it. Install it from https://cli.github.com."})
-			} else if _, err := env.Exec("", "gh", "auth", "status"); err != nil {
-				checks = append(checks, check{Name: "github_cli", Status: "warn", Detail: "gh is installed but not signed in", Hint: "Run `gh auth login`."})
+			} else if login, err := env.Exec("", "gh", "api", "user", "--jq", ".login"); err != nil {
+				checks = append(checks, check{Name: "github_cli", Status: "warn", Detail: "gh is installed but can't reach GitHub as a signed-in user", Hint: "Run `gh auth login`, or check your network."})
 			} else {
-				checks = append(checks, check{Name: "github_cli", Status: "ok", Detail: "gh is installed and signed in"})
+				checks = append(checks, check{Name: "github_cli", Status: "ok", Detail: "gh is signed in as " + strings.TrimSpace(login)})
 			}
 			ok := true
 			for _, ch := range checks {
