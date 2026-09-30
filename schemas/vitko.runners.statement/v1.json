@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.statement/v1",
+  "title": "Statement",
+  "description": "A month's statement.",
+  "type": "object",
+  "required": [
+    "schema",
+    "month",
+    "data"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.statement/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "month": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object"
+    }
+  }
+}

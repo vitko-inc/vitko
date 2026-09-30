@@ -52,6 +52,9 @@ type Command struct {
 	// Idempotent is true when repeating the command with the same input is safe
 	// and leads to the same result.
 	Idempotent bool
+	// NoDryRun marks a mutating command that has no dry run (signing in and
+	// out: they change only your own stored credential).
+	NoDryRun bool
 	// Network is true when the command may use the network.
 	Network bool
 	// Scopes the command needs on a Vitko credential (none in this release).

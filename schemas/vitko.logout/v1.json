@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.logout/v1",
+  "title": "Signed out",
+  "description": "The result of `vitko logout`.",
+  "type": "object",
+  "required": [
+    "schema",
+    "signed_out"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.logout/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "signed_out": {
+      "type": "boolean"
+    },
+    "server_session_ended": {
+      "type": "boolean"
+    },
+    "api_url": {
+      "type": "string"
+    }
+  }
+}

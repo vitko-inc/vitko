@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.auth-token/v1",
+  "title": "Access token",
+  "description": "Tokens from a device login, a refresh, or a GitHub Actions exchange.",
+  "type": "object",
+  "required": [
+    "schema",
+    "token_type",
+    "access_token",
+    "expires_at",
+    "kind"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.auth-token/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "token_type": {
+      "const": "Bearer"
+    },
+    "access_token": {
+      "type": "string"
+    },
+    "expires_in": {
+      "type": "integer"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "refresh_token": {
+      "type": "string"
+    },
+    "refresh_expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "login": {
+          "type": "string"
+        }
+      }
+    },
+    "orgs": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "signed_in_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

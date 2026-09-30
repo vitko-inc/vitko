@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.login/v1",
+  "title": "Signed in",
+  "description": "Printed by `vitko login` once the sign-in is stored.",
+  "type": "object",
+  "required": [
+    "schema",
+    "kind",
+    "actor",
+    "api_url",
+    "orgs"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.login/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "kind": {
+      "type": "string",
+      "description": "user (a device login) or token (an API token)."
+    },
+    "actor": {
+      "type": "string"
+    },
+    "api_url": {
+      "type": "string"
+    },
+    "credential_file": {
+      "type": "string"
+    },
+    "orgs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "login": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "scopes": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    }
+  }
+}

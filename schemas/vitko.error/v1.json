@@ -50,8 +50,10 @@
           "type": "string",
           "format": "uri"
         },
-        "details": {
-          "type": "object"
+        "details": {},
+        "request_id": {
+          "type": "string",
+          "description": "Quote it when asking for help."
         }
       },
       "required": [

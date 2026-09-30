@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -33,6 +34,10 @@ type harness struct {
 	terminal bool
 	lookPath func(string) (string, error)
 	exec     sys.Exec
+	http     *http.Client
+	stdin    string
+	now      time.Time
+	opened   []string
 }
 
 func newHarness(t *testing.T) *harness {
@@ -45,11 +50,17 @@ func newHarness(t *testing.T) *harness {
 
 func (h *harness) run(args ...string) result {
 	var out, errb bytes.Buffer
+	now := h.now
+	if now.IsZero() {
+		now = time.Date(2026, 10, 15, 12, 0, 0, 0, time.UTC)
+	}
 	a := New(Env{
-		Stdin: strings.NewReader(""), Stdout: &out, Stderr: &errb,
+		Stdin: strings.NewReader(h.stdin), Stdout: &out, Stderr: &errb,
 		Getenv:           func(k string) string { return h.env[k] },
 		StdoutIsTerminal: h.terminal, LookPath: h.lookPath, Exec: h.exec,
-		Now: func() time.Time { return time.Date(2026, 10, 15, 12, 0, 0, 0, time.UTC) },
+		Now:  func() time.Time { return now },
+		HTTP: h.http, Sleep: func(time.Duration) {},
+		OpenBrowser: func(u string) error { h.opened = append(h.opened, u); return nil },
 	})
 	code := a.Run(args)
 	return result{code, out.String(), errb.String()}
@@ -429,7 +440,7 @@ func TestRegistryIsConsistent(t *testing.T) {
 				t.Errorf("%s: --dry-run on a command that doesn't mutate", c.Name())
 			}
 		}
-		if c.Mutates && !hasFlag(c, "dry-run") {
+		if c.Mutates && !c.NoDryRun && !hasFlag(c, "dry-run") {
 			t.Errorf("%s: mutating command without --dry-run", c.Name())
 		}
 	}

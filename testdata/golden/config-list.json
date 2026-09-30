@@ -9,10 +9,18 @@
         "json",
         "ndjson"
       ]
+    },
+    {
+      "name": "org",
+      "summary": "Default GitHub organization (login or numeric id) when --org and VITKO_ORG are not set."
     }
   ],
   "path": "$VITKO_CONFIG_DIR/config.json",
   "values": {
+    "org": {
+      "source": "unset",
+      "value": null
+    },
     "output": {
       "source": "unset",
       "value": null

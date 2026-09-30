@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.oidc-trust-rule/v1",
+  "title": "CI trust rule",
+  "description": "One trust rule.",
+  "type": "object",
+  "required": [
+    "schema",
+    "data"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.oidc-trust-rule/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data": {
+      "type": "object"
+    }
+  }
+}

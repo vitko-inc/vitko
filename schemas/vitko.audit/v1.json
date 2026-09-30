@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.audit/v1",
+  "title": "Audit trail",
+  "description": "Who changed limits, ceilings, tokens and trust rules.",
+  "type": "object",
+  "required": [
+    "schema",
+    "data"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.audit/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "github_org_id": {
+            "type": "integer"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "actor_kind": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "actor",
+          "action",
+          "at"
+        ]
+      }
+    }
+  }
+}

@@ -18,6 +18,7 @@ const (
 	ExitForbidden      = 4
 	ExitNotFound       = 5
 	ExitConflict       = 6
+	ExitLimit          = 7
 	ExitUnavailable    = 8
 	ExitChangesPending = 10
 )
@@ -33,12 +34,13 @@ var ExitCodes = []struct {
 	{ExitSignedOut, "Not signed in, or the sign-in expired."},
 	{ExitForbidden, "Signed in but not allowed."},
 	{ExitNotFound, "Not found, or not visible to you."},
-	{ExitConflict, "Conflict with the current state, for example a branch that already exists."},
+	{ExitConflict, "Conflict with the current state, for example a branch that already exists or a stale revision."},
+	{ExitLimit, "A spend or concurrency limit, or its ceiling, stopped it."},
 	{ExitUnavailable, "Temporarily unavailable or rate limited. Safe to retry."},
 	{ExitChangesPending, "--check: changes would be made."},
 }
 
-// Codes 7, 9 and 11-99 are reserved for future use.
+// Codes 9 and 11-99 are reserved for future use.
 
 // errorCodes maps every stable error code to its exit code and meaning.
 var errorCodes = map[string]struct {
@@ -60,6 +62,22 @@ var errorCodes = map[string]struct {
 	"not_a_git_repository": {ExitNotFound, "The path isn't inside a git repository."},
 	"branch_exists":        {ExitConflict, "The branch for the pull request already exists."},
 	"github_unavailable":   {ExitUnavailable, "GitHub didn't answer. Safe to retry."},
+	// From the Vitko API (the API may add codes; the exit code then follows
+	// the HTTP status).
+	"signed_out":             {ExitSignedOut, "Not signed in to Vitko."},
+	"token_expired":          {ExitSignedOut, "The sign-in or token has expired."},
+	"token_invalid":          {ExitSignedOut, "The token isn't valid (revoked, expired or mistyped)."},
+	"forbidden":              {ExitForbidden, "Not allowed."},
+	"scope_missing":          {ExitForbidden, "The credential lacks the scope this needs."},
+	"human_session_required": {ExitForbidden, "Only an organization admin, signed in, can do this."},
+	"fresh_sign_in_required": {ExitForbidden, "This needs a sign-in from the last 12 hours."},
+	"not_found":              {ExitNotFound, "Not found, or not visible to you."},
+	"revision_conflict":      {ExitConflict, "The resource changed since the revision given."},
+	"limit_above_ceiling":    {ExitLimit, "The value is above the organization's ceiling."},
+	"ceiling_not_set":        {ExitLimit, "No ceiling is set, so tokens can only lower the limit."},
+	"access_denied":          {ExitForbidden, "The sign-in was denied in the browser."},
+	"expired_token":          {ExitSignedOut, "The sign-in code expired before it was approved."},
+	"unavailable":            {ExitUnavailable, "The Vitko API is unavailable. Safe to retry."},
 }
 
 // ErrorCodeList returns the catalog sorted by code, for help --json.
@@ -85,20 +103,26 @@ type Fix struct {
 
 // Error is the one error shape (vitko.error/v1).
 type Error struct {
-	Code              string         `json:"code"`
-	Message           string         `json:"message"`
-	Retryable         bool           `json:"retryable"`
-	RetryAfterSeconds *int           `json:"retry_after_seconds,omitempty"`
-	Hint              string         `json:"hint,omitempty"`
-	Fix               *Fix           `json:"fix,omitempty"`
-	Docs              string         `json:"docs,omitempty"`
-	Details           map[string]any `json:"details,omitempty"`
+	// exit overrides the catalog's exit code (API errors with new codes).
+	exit              int
+	Code              string `json:"code"`
+	Message           string `json:"message"`
+	Retryable         bool   `json:"retryable"`
+	RetryAfterSeconds *int   `json:"retry_after_seconds,omitempty"`
+	Hint              string `json:"hint,omitempty"`
+	Fix               *Fix   `json:"fix,omitempty"`
+	Docs              string `json:"docs,omitempty"`
+	Details           any    `json:"details,omitempty"`
+	RequestID         string `json:"request_id,omitempty"`
 }
 
 func (e *Error) Error() string { return e.Message }
 
 // ExitCode is the process exit code for this error.
 func (e *Error) ExitCode() int {
+	if e.exit != 0 {
+		return e.exit
+	}
 	if c, ok := errorCodes[e.Code]; ok {
 		return c.Exit
 	}
@@ -121,6 +145,40 @@ func (e *Error) WithFix(cmd string) *Error { e.Fix = &Fix{Command: cmd}; return 
 
 // WithDetails sets details and returns e.
 func (e *Error) WithDetails(d map[string]any) *Error { e.Details = d; return e }
+
+// APIError is an error the Vitko API returned. Its exit code comes from the
+// catalog when the code is known, else from the HTTP status.
+func APIError(status int, e Error) *Error {
+	out := e
+	if _, known := errorCodes[out.Code]; !known || out.Code == "" {
+		out.exit = ExitForStatus(status)
+		if out.Code == "" {
+			out.Code = "unavailable"
+		}
+	}
+	return &out
+}
+
+// ExitForStatus maps an HTTP status to an exit code.
+func ExitForStatus(status int) int {
+	switch {
+	case status == 400:
+		return ExitUsage
+	case status == 401:
+		return ExitSignedOut
+	case status == 403:
+		return ExitForbidden
+	case status == 404:
+		return ExitNotFound
+	case status == 409 || status == 412:
+		return ExitConflict
+	case status == 422:
+		return ExitLimit
+	case status == 429 || status == 502 || status == 503 || status == 504:
+		return ExitUnavailable
+	}
+	return ExitInternal
+}
 
 // AsError converts any error into an *Error (unknown errors become "internal").
 func AsError(err error) *Error {

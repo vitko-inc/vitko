@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.job-failure/v1",
+  "title": "Job failure",
+  "description": "A job with its steps and the failing lines.",
+  "type": "object",
+  "required": [
+    "schema",
+    "data"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.job-failure/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "job": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "description": "Open enum, for example queued, running, completed."
+            },
+            "repository": {
+              "type": "string"
+            },
+            "workflow": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "run_url": {
+              "type": "string"
+            },
+            "queued_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "started_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "finished_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "waited_seconds": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "ran_seconds": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "billed_seconds": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "cost_micros": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "USD micros (1 USD = 1,000,000); null means none."
+            },
+            "github_list_micros": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "USD micros (1 USD = 1,000,000); null means none."
+            },
+            "waiting_reason": {
+              "type": "string"
+            },
+            "time_zone": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "status",
+            "repository"
+          ],
+          "description": "A job; more fields may appear."
+        },
+        "diagnostics": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "steps": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "excerpt_note": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "job",
+        "diagnostics"
+      ]
+    }
+  }
+}

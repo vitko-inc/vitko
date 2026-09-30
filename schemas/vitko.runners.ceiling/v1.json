@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.ceiling/v1",
+  "title": "Ceilings",
+  "description": "The ceilings API tokens and CI jobs can't set limits above.",
+  "type": "object",
+  "required": [
+    "schema",
+    "data"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.ceiling/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "spend_ceiling_micros": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "USD micros (1 USD = 1,000,000); null means none."
+        },
+        "concurrency_ceiling": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "revision": {
+          "type": "integer"
+        },
+        "changed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "currency": {
+          "const": "USD"
+        }
+      },
+      "required": [
+        "revision"
+      ]
+    }
+  }
+}
