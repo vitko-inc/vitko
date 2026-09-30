@@ -1,0 +1,21 @@
+{
+  "schema": "vitko.config/v1",
+  "keys": [
+    {
+      "name": "output",
+      "summary": "Default output format when --output and VITKO_OUTPUT are not set.",
+      "enum": [
+        "text",
+        "json",
+        "ndjson"
+      ]
+    }
+  ],
+  "path": "$VITKO_CONFIG_DIR/config.json",
+  "values": {
+    "output": {
+      "source": "unset",
+      "value": null
+    }
+  }
+}

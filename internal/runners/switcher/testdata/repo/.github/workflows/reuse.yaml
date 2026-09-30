@@ -1,0 +1,21 @@
+name: Reuse
+on: push
+jobs:
+  remote:
+    uses: example-org/shared/.github/workflows/build.yml@v1
+  local:
+    uses: ./.github/workflows/called.yml
+  group:
+    runs-on:
+      group: big-runners
+      labels: [linux]
+    steps:
+      - run: echo group
+  mine:
+    runs-on: [self-hosted, linux, x64]
+    steps:
+      - run: echo self
+  multi:
+    runs-on: [ubuntu-latest, gpu]
+    steps:
+      - run: echo multi

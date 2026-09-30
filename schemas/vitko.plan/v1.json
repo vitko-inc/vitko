@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.plan/v1",
+  "title": "Plan",
+  "description": "What a mutation would do, from --dry-run. Nothing is written.",
+  "type": "object",
+  "required": [
+    "schema",
+    "dry_run",
+    "would_succeed",
+    "changes"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.plan/v1"
+    },
+    "dry_run": {
+      "const": true
+    },
+    "would_succeed": {
+      "type": "boolean"
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "from": {},
+          "to": {}
+        },
+        "required": [
+          "resource",
+          "field"
+        ]
+      }
+    },
+    "blocked_by": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "vitko.runners.pricing/v1",
+  "product": "Vitko Runners",
+  "prices_as_of": "2026-09-27",
+  "currency": "USD",
+  "slot": {
+    "runs_on": "vitko-ubuntu-24.04",
+    "os": "Ubuntu 24.04",
+    "arch": "x64",
+    "vcpus_max": 2,
+    "memory_bytes_max": 8589934592
+  },
+  "price_micros_per_slot_minute": 2000,
+  "billing": {
+    "increment_seconds": 1,
+    "description": "Billed per second of job time, not rounded up to the minute."
+  },
+  "free_minutes_per_month": 2000,
+  "comparison": {
+    "github_micros_per_minute": 6000,
+    "basis": "GitHub's list price for a standard 2-core Linux x64 hosted runner, which GitHub rounds up to whole minutes per job.",
+    "source": "https://docs.github.com/en/billing/reference/actions-runner-pricing",
+    "ratio": "A third of GitHub's price.",
+    "prices_as_of": "2026-09-27"
+  },
+  "notes": [
+    "Run `vitko runners estimate` on your GitHub usage report to see what your own CI would cost."
+  ],
+  "url": "https://runners.vitko.inc"
+}

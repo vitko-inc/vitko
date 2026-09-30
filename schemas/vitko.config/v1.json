@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.config/v1",
+  "title": "Settings",
+  "description": "Your vitko settings and where each value comes from.",
+  "type": "object",
+  "required": [
+    "schema",
+    "path",
+    "values"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.config/v1"
+    },
+    "path": {
+      "type": "string"
+    },
+    "changed": {
+      "type": "boolean",
+      "description": "Present on `config set`."
+    },
+    "values": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "description": "Open enum: env, file, unset."
+          }
+        },
+        "required": [
+          "value",
+          "source"
+        ]
+      }
+    },
+    "keys": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "enum": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "summary"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.estimate/v1",
+  "title": "Vitko Runners estimate",
+  "description": "What GitHub Actions usage from GitHub's usage report would cost on Vitko Runners. An estimate at list prices, not a quote.",
+  "type": "object",
+  "required": [
+    "schema",
+    "prices_as_of",
+    "currency",
+    "months",
+    "totals",
+    "by_class",
+    "assumptions",
+    "caveats"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.estimate/v1"
+    },
+    "prices_as_of": {
+      "type": "string",
+      "format": "date"
+    },
+    "currency": {
+      "const": "USD"
+    },
+    "rate_micros_per_minute": {
+      "type": "integer",
+      "description": "USD micros (1 USD = 1,000,000)."
+    },
+    "free_minutes_per_month": {
+      "type": "integer"
+    },
+    "per_second_factor": {
+      "type": "number"
+    },
+    "files": {
+      "type": "integer"
+    },
+    "rows_read": {
+      "type": "integer"
+    },
+    "rows_ignored": {
+      "type": "integer",
+      "description": "Rows that aren't Actions usage (seats, Copilot, ...)."
+    },
+    "months": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "description": "YYYY-MM, or \"unknown\" when the report has no date."
+          },
+          "movable_minutes": {
+            "type": "number",
+            "description": "Linux x64 minutes that can move, counted in slots (a larger runner counts as cores / 2 slots)."
+          },
+          "slot_minutes": {
+            "type": "number",
+            "description": "movable_minutes after the per-second factor: what Vitko would bill."
+          },
+          "free_minutes": {
+            "type": "number"
+          },
+          "github_gross_micros": {
+            "type": "integer",
+            "description": "What GitHub's list price bills for these minutes (USD micros)."
+          },
+          "github_net_micros": {
+            "type": "integer",
+            "description": "What was actually paid to GitHub after included minutes and discounts (USD micros)."
+          },
+          "vitko_before_free_micros": {
+            "type": "integer",
+            "description": "USD micros (1 USD = 1,000,000)."
+          },
+          "vitko_micros": {
+            "type": "integer",
+            "description": "Vitko list price after the month's free minutes (USD micros)."
+          }
+        },
+        "required": [
+          "month",
+          "movable_minutes",
+          "slot_minutes",
+          "github_gross_micros",
+          "github_net_micros",
+          "vitko_before_free_micros",
+          "vitko_micros"
+        ]
+      }
+    },
+    "totals": {
+      "type": "object",
+      "properties": {
+        "slot_minutes": {
+          "type": "number"
+        },
+        "github_gross_micros": {
+          "type": "integer",
+          "description": "USD micros (1 USD = 1,000,000)."
+        },
+        "github_net_micros": {
+          "type": "integer",
+          "description": "USD micros (1 USD = 1,000,000)."
+        },
+        "vitko_before_free_micros": {
+          "type": "integer",
+          "description": "USD micros (1 USD = 1,000,000)."
+        },
+        "vitko_micros": {
+          "type": "integer",
+          "description": "USD micros (1 USD = 1,000,000)."
+        },
+        "saving_vs_github_gross": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "1 - Vitko list / GitHub list, as a fraction."
+        },
+        "saving_vs_github_gross_unavailable_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "saving_vs_github_net": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "1 - Vitko after free minutes / GitHub paid, as a fraction."
+        },
+        "saving_vs_github_net_unavailable_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "github_gross_micros",
+        "github_net_micros",
+        "vitko_before_free_micros",
+        "vitko_micros",
+        "saving_vs_github_gross",
+        "saving_vs_github_net"
+      ]
+    },
+    "by_class": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "Open enum: linux_x64_<N>core, linux_arm, windows, macos, gpu, other."
+          },
+          "movable": {
+            "type": "boolean"
+          },
+          "minutes": {
+            "type": "number"
+          },
+          "github_gross_micros": {
+            "type": "integer",
+            "description": "USD micros (1 USD = 1,000,000)."
+          },
+          "github_net_micros": {
+            "type": "integer",
+            "description": "USD micros (1 USD = 1,000,000)."
+          }
+        },
+        "required": [
+          "class",
+          "movable",
+          "minutes"
+        ]
+      }
+    },
+    "storage_stays_on_github": {
+      "type": "object",
+      "properties": {
+        "gigabyte_hours": {
+          "type": "number"
+        },
+        "github_gross_micros": {
+          "type": "integer",
+          "description": "USD micros (1 USD = 1,000,000)."
+        },
+        "github_net_micros": {
+          "type": "integer",
+          "description": "USD micros (1 USD = 1,000,000)."
+        }
+      }
+    },
+    "not_movable": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "repository": {
+            "type": "string"
+          },
+          "minutes": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "repository",
+          "minutes"
+        ]
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "caveats": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

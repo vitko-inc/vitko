@@ -1,0 +1,9 @@
+name: Alias
+on: push
+env:
+  RUNNER: &runner ubuntu-latest
+jobs:
+  anchored:
+    runs-on: *runner
+    steps:
+      - run: echo anchored

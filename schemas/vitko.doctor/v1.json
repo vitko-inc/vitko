@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.doctor/v1",
+  "title": "Doctor",
+  "description": "Checks that vitko and the tools it uses are ready.",
+  "type": "object",
+  "required": [
+    "schema",
+    "ok",
+    "checks"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.doctor/v1"
+    },
+    "ok": {
+      "type": "boolean",
+      "description": "False if any check failed."
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "description": "Open enum: ok, warn, fail."
+          },
+          "detail": {
+            "type": "string"
+          },
+          "hint": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "status",
+          "detail"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "schema": "vitko.schema-list/v1",
+  "schemas": [
+    {
+      "id": "vitko.config-value/v1",
+      "title": "Setting",
+      "url": "https://runners.vitko.inc/schemas/vitko.config-value/v1"
+    },
+    {
+      "id": "vitko.config/v1",
+      "title": "Settings",
+      "url": "https://runners.vitko.inc/schemas/vitko.config/v1"
+    },
+    {
+      "id": "vitko.doctor/v1",
+      "title": "Doctor",
+      "url": "https://runners.vitko.inc/schemas/vitko.doctor/v1"
+    },
+    {
+      "id": "vitko.envelope/v1",
+      "title": "Envelope",
+      "url": "https://runners.vitko.inc/schemas/vitko.envelope/v1"
+    },
+    {
+      "id": "vitko.error/v1",
+      "title": "Error",
+      "url": "https://runners.vitko.inc/schemas/vitko.error/v1"
+    },
+    {
+      "id": "vitko.help/v1",
+      "title": "Help",
+      "url": "https://runners.vitko.inc/schemas/vitko.help/v1"
+    },
+    {
+      "id": "vitko.install/v1",
+      "title": "Install result",
+      "url": "https://runners.vitko.inc/schemas/vitko.install/v1"
+    },
+    {
+      "id": "vitko.plan/v1",
+      "title": "Plan",
+      "url": "https://runners.vitko.inc/schemas/vitko.plan/v1"
+    },
+    {
+      "id": "vitko.runners.estimate/v1",
+      "title": "Vitko Runners estimate",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.estimate/v1"
+    },
+    {
+      "id": "vitko.runners.pricing/v1",
+      "title": "Vitko Runners pricing",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.pricing/v1"
+    },
+    {
+      "id": "vitko.runners.switch/v1",
+      "title": "Switch workflows",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.switch/v1"
+    },
+    {
+      "id": "vitko.schema-list/v1",
+      "title": "Schema list",
+      "url": "https://runners.vitko.inc/schemas/vitko.schema-list/v1"
+    },
+    {
+      "id": "vitko.version/v1",
+      "title": "Version",
+      "url": "https://runners.vitko.inc/schemas/vitko.version/v1"
+    }
+  ]
+}

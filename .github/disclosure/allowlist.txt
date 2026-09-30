@@ -1,0 +1,1 @@
+# Justified exceptions: "<path glob> <sha256>  # reason". Keep this short.

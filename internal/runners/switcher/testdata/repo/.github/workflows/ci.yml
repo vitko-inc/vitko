@@ -1,0 +1,44 @@
+# CI for the example project.
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest   # keep this comment
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test
+  lint:
+    name: Lint
+    runs-on: "ubuntu-24.04"
+    steps:
+      - run: make lint
+  build:
+    runs-on: 'ubuntu-latest'
+    needs: [test, lint]
+    steps:
+      - run: make build
+  flow:
+    runs-on: [ubuntu-latest]
+    steps:
+      - run: echo flow
+  mac:
+    runs-on: macos-latest
+    steps:
+      - run: echo mac
+  arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - run: echo arm
+  old:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: echo old
+  big:
+    runs-on: ubuntu-latest-8-cores
+    steps:
+      - run: echo big
+  done:
+    runs-on: vitko-ubuntu-24.04
+    steps:
+      - run: echo already

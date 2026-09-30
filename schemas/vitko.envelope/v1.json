@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.envelope/v1",
+  "title": "Envelope",
+  "description": "What every vitko JSON document has in common.",
+  "type": "object",
+  "required": [
+    "schema"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "pattern": "^vitko(\\.[a-z-]+)+/v[0-9]+$",
+      "description": "The document's schema id. New fields may appear without a version change; a breaking change bumps the version."
+    }
+  }
+}

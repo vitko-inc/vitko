@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.error/v1",
+  "title": "Error",
+  "description": "Printed on stderr when a command fails (JSON output modes). The exit code matches error.code; see `vitko help --json`.",
+  "type": "object",
+  "required": [
+    "schema",
+    "error"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.error/v1"
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Stable error code. Messages may change; codes don't. Open enum."
+        },
+        "message": {
+          "type": "string"
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "retry_after_seconds": {
+          "type": "integer"
+        },
+        "hint": {
+          "type": "string",
+          "description": "What to do next, in one sentence."
+        },
+        "fix": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "A command that fixes the problem."
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "A page where a person can fix it."
+            }
+          }
+        },
+        "docs": {
+          "type": "string",
+          "format": "uri"
+        },
+        "details": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "retryable"
+      ]
+    }
+  }
+}

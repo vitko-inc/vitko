@@ -1,0 +1,25 @@
+vitko: command-line tool for Vitko.
+
+Usage:
+  vitko <command> [flags]
+
+Commands:
+  config get            Show one setting.
+  config list           List your settings.
+  config set            Change one setting.
+  doctor                Check that vitko and the tools it uses are ready.
+  help                  Show help for vitko or a command.
+  runners estimate      Estimate what your GitHub Actions usage would cost on Vitko Runners.
+  runners pricing       Show the price list.
+  runners repos switch  Switch a repository's GitHub Actions jobs to Vitko runners.
+  schema list           List the JSON Schemas of vitko's output.
+  schema show           Print a JSON Schema (2020-12).
+  version               Show the version of vitko.
+
+Global flags:
+  --output MODE          Output format. Default: text on a terminal, json otherwise. One of: text, json, ndjson. Env: VITKO_OUTPUT.
+  --json                 Same as --output json.
+  --fields LIST          Keep only these fields in JSON output (comma-separated, dotted paths such as months.month). Implies --output json.
+  --help                 Show help for the command. With --json, as JSON.
+
+Output is text on a terminal and JSON otherwise. `vitko help --json` describes every command, flag, output schema, error code and exit code.

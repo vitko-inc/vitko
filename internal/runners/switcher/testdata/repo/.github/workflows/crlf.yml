@@ -1,0 +1,7 @@
+name: Windows line endings
+on: push
+jobs:
+  crlf:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo crlf

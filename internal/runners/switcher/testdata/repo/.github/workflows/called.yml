@@ -1,0 +1,10 @@
+name: Called
+on:
+  workflow_call:
+defaults: &defaults
+  runs-on: ubuntu-latest
+jobs:
+  inner:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo inner

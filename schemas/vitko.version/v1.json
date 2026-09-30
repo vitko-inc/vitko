@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.version/v1",
+  "title": "Version",
+  "description": "The version of this vitko binary.",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "os",
+    "arch"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.version/v1"
+    },
+    "version": {
+      "type": "string"
+    },
+    "commit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "date": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "go": {
+      "type": "string"
+    },
+    "os": {
+      "type": "string"
+    },
+    "arch": {
+      "type": "string"
+    }
+  }
+}

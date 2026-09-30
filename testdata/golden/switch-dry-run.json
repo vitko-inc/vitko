@@ -1,0 +1,160 @@
+{
+  "schema": "vitko.runners.switch/v1",
+  "dry_run": true,
+  "check": false,
+  "changed": false,
+  "label": "vitko-ubuntu-24.04",
+  "files": [
+    ".github/workflows/alias.yml",
+    ".github/workflows/called.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/crlf.yml",
+    ".github/workflows/matrix.yml",
+    ".github/workflows/reuse.yaml"
+  ],
+  "changes": [
+    {
+      "file": ".github/workflows/called.yml",
+      "job": "inner",
+      "line": 8,
+      "from": "ubuntu-latest",
+      "to": "vitko-ubuntu-24.04"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "job": "test",
+      "line": 7,
+      "from": "ubuntu-latest",
+      "to": "vitko-ubuntu-24.04"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "job": "lint",
+      "line": 13,
+      "from": "ubuntu-24.04",
+      "to": "vitko-ubuntu-24.04"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "job": "build",
+      "line": 17,
+      "from": "ubuntu-latest",
+      "to": "vitko-ubuntu-24.04"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "job": "flow",
+      "line": 22,
+      "from": "ubuntu-latest",
+      "to": "vitko-ubuntu-24.04"
+    },
+    {
+      "file": ".github/workflows/crlf.yml",
+      "job": "crlf",
+      "line": 5,
+      "from": "ubuntu-latest",
+      "to": "vitko-ubuntu-24.04"
+    }
+  ],
+  "skipped": [
+    {
+      "file": ".github/workflows/alias.yml",
+      "job": "anchored",
+      "line": 7,
+      "runs_on": "*runner",
+      "reason": "yaml_alias",
+      "hint": "runs-on comes from a YAML anchor. Change the anchor by hand if every job that uses it should move."
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "job": "mac",
+      "line": 26,
+      "runs_on": "macos-latest",
+      "reason": "not_linux_x64",
+      "hint": "Only Linux x64 jobs can run on Vitko. This one stays on GitHub."
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "job": "arm",
+      "line": 30,
+      "runs_on": "ubuntu-24.04-arm",
+      "reason": "not_linux_x64",
+      "hint": "Only Linux x64 jobs can run on Vitko. This one stays on GitHub."
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "job": "old",
+      "line": 34,
+      "runs_on": "ubuntu-22.04",
+      "reason": "other_ubuntu_version",
+      "hint": "Vitko runners use Ubuntu 24.04. Check that the job works on 24.04, then change it by hand."
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "job": "big",
+      "line": 38,
+      "runs_on": "ubuntu-latest-8-cores",
+      "reason": "unknown_label",
+      "hint": "A custom or larger runner label. Change it by hand if the job should move."
+    },
+    {
+      "file": ".github/workflows/matrix.yml",
+      "job": "test",
+      "line": 8,
+      "runs_on": "${{ matrix.os }}",
+      "reason": "expression",
+      "hint": "runs-on comes from the matrix (matrix.os). Change its Linux x64 values to vitko-ubuntu-24.04 by hand, and check any conditions that compare matrix.os."
+    },
+    {
+      "file": ".github/workflows/matrix.yml",
+      "job": "choose",
+      "line": 12,
+      "runs_on": "${{ github.event_name == 'push' && 'ubuntu-latest' || 'ubuntu-22.04' }}",
+      "reason": "expression",
+      "hint": "runs-on is an expression. Change it by hand if the job should move."
+    },
+    {
+      "file": ".github/workflows/reuse.yaml",
+      "job": "remote",
+      "line": 5,
+      "runs_on": "",
+      "reason": "reusable_workflow",
+      "hint": "This job calls a workflow from another repository (example-org/shared/.github/workflows/build.yml@v1). Switch that workflow in its own repository."
+    },
+    {
+      "file": ".github/workflows/reuse.yaml",
+      "job": "group",
+      "line": 10,
+      "runs_on": "{group: big-runners, labels: }",
+      "reason": "runner_group",
+      "hint": "The job picks a runner group. Change it by hand if the group should move."
+    },
+    {
+      "file": ".github/workflows/reuse.yaml",
+      "job": "mine",
+      "line": 15,
+      "runs_on": "[self-hosted, linux, x64]",
+      "reason": "self_hosted",
+      "hint": "The job runs on your own self-hosted runners."
+    },
+    {
+      "file": ".github/workflows/reuse.yaml",
+      "job": "multi",
+      "line": 19,
+      "runs_on": "[ubuntu-latest, gpu]",
+      "reason": "label_set",
+      "hint": "The job asks for several labels. Replace them with vitko-ubuntu-24.04 by hand if it should move."
+    }
+  ],
+  "already_switched": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "job": "done",
+      "runs_on": "vitko-ubuntu-24.04"
+    }
+  ],
+  "diff": "--- a/.github/workflows/called.yml\n+++ b/.github/workflows/called.yml\n@@ -5,6 +5,6 @@\n   runs-on: ubuntu-latest\n jobs:\n   inner:\n-    runs-on: ubuntu-latest\n+    runs-on: vitko-ubuntu-24.04\n     steps:\n       - run: echo inner\n--- a/.github/workflows/ci.yml\n+++ b/.github/workflows/ci.yml\n@@ -4,22 +4,22 @@\n \n jobs:\n   test:\n-    runs-on: ubuntu-latest   # keep this comment\n+    runs-on: vitko-ubuntu-24.04   # keep this comment\n     steps:\n       - uses: actions/checkout@v4\n       - run: make test\n   lint:\n     name: Lint\n-    runs-on: \"ubuntu-24.04\"\n+    runs-on: \"vitko-ubuntu-24.04\"\n     steps:\n       - run: make lint\n   build:\n-    runs-on: 'ubuntu-latest'\n+    runs-on: 'vitko-ubuntu-24.04'\n     needs: [test, lint]\n     steps:\n       - run: make build\n   flow:\n-    runs-on: [ubuntu-latest]\n+    runs-on: [vitko-ubuntu-24.04]\n     steps:\n       - run: echo flow\n   mac:\n--- a/.github/workflows/crlf.yml\n+++ b/.github/workflows/crlf.yml\n@@ -2,6 +2,6 @@\n on: push\r\n jobs:\r\n   crlf:\r\n-    runs-on: ubuntu-latest\r\n+    runs-on: vitko-ubuntu-24.04\r\n     steps:\r\n       - run: echo crlf\r\n",
+  "pull_request": null,
+  "branch": null,
+  "base": null
+}

@@ -1,0 +1,544 @@
+{
+  "schema": "vitko.help/v1",
+  "cli": {
+    "name": "vitko",
+    "version": "dev"
+  },
+  "scope": "",
+  "output": {
+    "modes": [
+      "text",
+      "json",
+      "ndjson"
+    ],
+    "default_on_terminal": "text",
+    "default_not_on_terminal": "json",
+    "env": "VITKO_OUTPUT",
+    "errors_on": "stderr",
+    "error_schema": "vitko.error/v1",
+    "interactive": false,
+    "schema_id_pattern": "vitko[.<product>].<type>/v<N>",
+    "notes": [
+      "stdout carries only the result document; diagnostics and errors go to stderr.",
+      "Every JSON document has a \"schema\" field. New fields may appear without a version change; a breaking change bumps the version.",
+      "Enums are open: handle values you don't know.",
+      "Money is in integer micros of USD (1 USD = 1,000,000 micros), with a \"currency\" field.",
+      "Unknown values are null, with a *_unavailable_reason field, never 0.",
+      "vitko never prompts. Missing input is a usage error (exit code 2)."
+    ]
+  },
+  "exit_codes": [
+    {
+      "code": 0,
+      "meaning": "Success."
+    },
+    {
+      "code": 1,
+      "meaning": "Unexpected failure. Please report it."
+    },
+    {
+      "code": 2,
+      "meaning": "Usage: a bad flag or argument, missing input, or a required tool is missing."
+    },
+    {
+      "code": 3,
+      "meaning": "Not signed in, or the sign-in expired."
+    },
+    {
+      "code": 4,
+      "meaning": "Signed in but not allowed."
+    },
+    {
+      "code": 5,
+      "meaning": "Not found, or not visible to you."
+    },
+    {
+      "code": 6,
+      "meaning": "Conflict with the current state, for example a branch that already exists."
+    },
+    {
+      "code": 8,
+      "meaning": "Temporarily unavailable or rate limited. Safe to retry."
+    },
+    {
+      "code": 10,
+      "meaning": "--check: changes would be made."
+    }
+  ],
+  "error_codes": [
+    {
+      "code": "branch_exists",
+      "exit_code": 6,
+      "meaning": "The branch for the pull request already exists."
+    },
+    {
+      "code": "file_not_found",
+      "exit_code": 5,
+      "meaning": "A file or directory doesn't exist."
+    },
+    {
+      "code": "github_forbidden",
+      "exit_code": 4,
+      "meaning": "GitHub refused the request for this account."
+    },
+    {
+      "code": "github_not_found",
+      "exit_code": 5,
+      "meaning": "GitHub has no such organization or repository, or it isn't visible to you."
+    },
+    {
+      "code": "github_signed_out",
+      "exit_code": 3,
+      "meaning": "The GitHub CLI (gh) isn't signed in."
+    },
+    {
+      "code": "github_unavailable",
+      "exit_code": 8,
+      "meaning": "GitHub didn't answer. Safe to retry."
+    },
+    {
+      "code": "input_required",
+      "exit_code": 2,
+      "meaning": "A required argument or flag is missing."
+    },
+    {
+      "code": "internal",
+      "exit_code": 1,
+      "meaning": "An unexpected failure."
+    },
+    {
+      "code": "invalid_input",
+      "exit_code": 2,
+      "meaning": "An input file or value couldn't be read."
+    },
+    {
+      "code": "not_a_git_repository",
+      "exit_code": 5,
+      "meaning": "The path isn't inside a git repository."
+    },
+    {
+      "code": "plugin_not_installed",
+      "exit_code": 5,
+      "meaning": "The helper program for this command isn't installed here."
+    },
+    {
+      "code": "schema_not_found",
+      "exit_code": 5,
+      "meaning": "No schema has that id."
+    },
+    {
+      "code": "tool_missing",
+      "exit_code": 2,
+      "meaning": "A program this command needs (git or gh) isn't installed."
+    },
+    {
+      "code": "unknown_command",
+      "exit_code": 2,
+      "meaning": "No such command."
+    },
+    {
+      "code": "usage",
+      "exit_code": 2,
+      "meaning": "A flag or argument is wrong."
+    }
+  ],
+  "global_flags": [
+    {
+      "name": "output",
+      "type": "string",
+      "enum": [
+        "text",
+        "json",
+        "ndjson"
+      ],
+      "env": "VITKO_OUTPUT",
+      "summary": "Output format. Default: text on a terminal, json otherwise."
+    },
+    {
+      "name": "json",
+      "type": "boolean",
+      "summary": "Same as --output json."
+    },
+    {
+      "name": "fields",
+      "type": "string[]",
+      "summary": "Keep only these fields in JSON output (comma-separated, dotted paths such as months.month). Implies --output json."
+    },
+    {
+      "name": "help",
+      "type": "boolean",
+      "summary": "Show help for the command. With --json, as JSON."
+    }
+  ],
+  "commands": [
+    {
+      "path": "config get",
+      "summary": "Show one setting.",
+      "args": [
+        {
+          "name": "key",
+          "summary": "The setting's name.",
+          "required": true,
+          "variadic": false
+        }
+      ],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": false,
+      "scopes": [],
+      "output_schema": "vitko.config-value/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "invalid_input"
+      ],
+      "examples": [
+        "vitko config get output"
+      ],
+      "plugin": false
+    },
+    {
+      "path": "config list",
+      "summary": "List your settings.",
+      "args": [],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": false,
+      "scopes": [],
+      "output_schema": "vitko.config/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "invalid_input"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "config set",
+      "summary": "Change one setting.",
+      "description": "Writes the settings file. An empty value removes the setting.",
+      "args": [
+        {
+          "name": "key",
+          "summary": "The setting's name.",
+          "required": true,
+          "variadic": false
+        },
+        {
+          "name": "value",
+          "summary": "The new value (empty to remove it).",
+          "required": true,
+          "variadic": false
+        }
+      ],
+      "flags": [
+        {
+          "name": "dry-run",
+          "type": "boolean",
+          "summary": "Show what would change without writing anything."
+        }
+      ],
+      "mutates": true,
+      "idempotent": true,
+      "dry_run": true,
+      "network": false,
+      "scopes": [],
+      "output_schema": "vitko.config/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "invalid_input"
+      ],
+      "examples": [
+        "vitko config set output json",
+        "vitko config set output ''"
+      ],
+      "plugin": false
+    },
+    {
+      "path": "doctor",
+      "summary": "Check that vitko and the tools it uses are ready.",
+      "description": "Runs local checks and reports each as ok, warn or fail, with a hint for anything that isn't ok.",
+      "args": [],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.doctor/v1",
+      "errors": [
+        "usage",
+        "internal"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "help",
+      "summary": "Show help for vitko or a command.",
+      "description": "Lists commands. With --json (or when output is not a terminal), prints the whole command tree as one document: every command's arguments, flags, output schema and error codes, plus the exit codes.",
+      "args": [
+        {
+          "name": "command",
+          "summary": "Show help for this command only, for example `runners estimate`.",
+          "required": false,
+          "variadic": true
+        }
+      ],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": false,
+      "scopes": [],
+      "output_schema": "vitko.help/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "unknown_command"
+      ],
+      "examples": [
+        "vitko help",
+        "vitko help --json",
+        "vitko help runners estimate --json"
+      ],
+      "plugin": false
+    },
+    {
+      "path": "runners estimate",
+      "summary": "Estimate what your GitHub Actions usage would cost on Vitko Runners.",
+      "description": "Reads GitHub's usage report and prices the Linux x64 minutes at the Vitko list price, next to what GitHub charged. It runs on your machine: the report is never uploaded.\nGet the report from GitHub: Settings > Billing and licensing > Usage > Get usage report (the summarized report is enough). Or pass --from-github to fetch it with the GitHub CLI (needs an organization owner or billing manager).\nEach month gets its own free minutes. The result is an upper bound, because GitHub rounds each job up to whole minutes and Vitko bills per second.",
+      "args": [
+        {
+          "name": "file",
+          "summary": "GitHub usage report: the CSV, or the JSON from the billing usage API. Several files are fine.",
+          "required": false,
+          "variadic": true
+        }
+      ],
+      "flags": [
+        {
+          "name": "from-github",
+          "type": "string",
+          "summary": "Fetch the usage of this GitHub organization with the GitHub CLI (gh) instead of reading files."
+        },
+        {
+          "name": "month",
+          "type": "string[]",
+          "summary": "With --from-github: the month(s) to fetch. Default: last month."
+        },
+        {
+          "name": "by-repo",
+          "type": "boolean",
+          "summary": "Also list Linux x64 minutes per repository."
+        },
+        {
+          "name": "per-second-factor",
+          "type": "number",
+          "default": 1,
+          "summary": "Illustrative ratio of per-second time to GitHub's rounded minutes, in (0, 1]. 1 is the upper bound."
+        }
+      ],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.runners.estimate/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "input_required",
+        "invalid_input",
+        "file_not_found",
+        "tool_missing",
+        "github_signed_out",
+        "github_forbidden",
+        "github_not_found",
+        "github_unavailable"
+      ],
+      "examples": [
+        "vitko runners estimate usage-report.csv",
+        "vitko runners estimate usage-2026-08.csv usage-2026-09.csv --by-repo",
+        "vitko runners estimate --from-github my-org --month 2026-08 --month 2026-09"
+      ],
+      "plugin": false
+    },
+    {
+      "path": "runners pricing",
+      "summary": "Show the price list.",
+      "description": "The public list price, how time is billed, the free minutes and the dated GitHub price it is compared with.",
+      "args": [],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": false,
+      "scopes": [],
+      "output_schema": "vitko.runners.pricing/v1",
+      "errors": [
+        "usage",
+        "internal"
+      ],
+      "examples": [
+        "vitko runners pricing",
+        "vitko runners pricing --fields price_micros_per_slot_minute,free_minutes_per_month"
+      ],
+      "plugin": false
+    },
+    {
+      "path": "runners repos switch",
+      "summary": "Switch a repository's GitHub Actions jobs to Vitko runners.",
+      "description": "Changes `runs-on: ubuntu-latest` and `runs-on: ubuntu-24.04` to `vitko-ubuntu-24.04` in .github/workflows. Only that value changes; comments and formatting stay as they are. Jobs it can't change safely (expressions and matrices, other operating systems, self-hosted runners, runner groups, custom labels, workflows from other repositories) are listed with the reason, and left alone.\nRunning it again changes nothing. --dry-run shows the diff without writing. --check exits with code 10 if anything would change. --pr makes the change on a fresh copy of the default branch and opens a pull request with your own git and GitHub CLI (gh) sign-in; your working copy isn't touched.",
+      "args": [
+        {
+          "name": "path",
+          "summary": "Repository directory, or one workflow file. Default: the current directory.",
+          "required": false,
+          "variadic": false
+        }
+      ],
+      "flags": [
+        {
+          "name": "workflow",
+          "type": "string[]",
+          "summary": "Only these workflow files (name or path)."
+        },
+        {
+          "name": "job",
+          "type": "string[]",
+          "summary": "Only these job ids."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "vitko-ubuntu-24.04",
+          "summary": "The runs-on label to switch to."
+        },
+        {
+          "name": "dry-run",
+          "type": "boolean",
+          "summary": "Show the diff without writing anything."
+        },
+        {
+          "name": "check",
+          "type": "boolean",
+          "summary": "Write nothing; exit with code 10 if anything would change."
+        },
+        {
+          "name": "pr",
+          "type": "boolean",
+          "summary": "Open a pull request instead of editing the working copy."
+        },
+        {
+          "name": "base",
+          "type": "string",
+          "summary": "With --pr: the branch to change and target. Default: the repository's default branch."
+        },
+        {
+          "name": "branch",
+          "type": "string",
+          "default": "vitko/switch-runners",
+          "summary": "With --pr: the name of the new branch."
+        }
+      ],
+      "mutates": true,
+      "idempotent": true,
+      "dry_run": true,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.runners.switch/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "file_not_found",
+        "not_a_git_repository",
+        "tool_missing",
+        "github_signed_out",
+        "github_forbidden",
+        "github_not_found",
+        "github_unavailable",
+        "branch_exists",
+        "input_required"
+      ],
+      "examples": [
+        "vitko runners repos switch --dry-run",
+        "vitko runners repos switch",
+        "vitko runners repos switch --check",
+        "vitko runners repos switch --pr",
+        "vitko runners repos switch path/to/repo --workflow ci.yml --job test"
+      ],
+      "plugin": false
+    },
+    {
+      "path": "schema list",
+      "summary": "List the JSON Schemas of vitko's output.",
+      "args": [],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": false,
+      "scopes": [],
+      "output_schema": "vitko.schema-list/v1",
+      "errors": [
+        "usage",
+        "internal"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "schema show",
+      "summary": "Print a JSON Schema (2020-12).",
+      "description": "Prints the schema document itself, as JSON in every output mode.",
+      "args": [
+        {
+          "name": "id",
+          "summary": "Schema id, for example vitko.runners.estimate/v1.",
+          "required": true,
+          "variadic": false
+        }
+      ],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": false,
+      "scopes": [],
+      "errors": [
+        "usage",
+        "internal",
+        "schema_not_found"
+      ],
+      "examples": [
+        "vitko schema show vitko.runners.estimate/v1"
+      ],
+      "plugin": false
+    },
+    {
+      "path": "version",
+      "summary": "Show the version of vitko.",
+      "args": [],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": false,
+      "scopes": [],
+      "output_schema": "vitko.version/v1",
+      "errors": [
+        "usage",
+        "internal"
+      ],
+      "examples": [],
+      "plugin": false
+    }
+  ]
+}

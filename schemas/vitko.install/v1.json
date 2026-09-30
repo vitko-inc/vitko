@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.install/v1",
+  "title": "Install result",
+  "description": "Printed by install.sh when VITKO_OUTPUT=json.",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "path",
+    "checksum_verified",
+    "signature_verified"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.install/v1"
+    },
+    "version": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "os": {
+      "type": "string"
+    },
+    "arch": {
+      "type": "string"
+    },
+    "checksum_verified": {
+      "type": "boolean"
+    },
+    "signature_verified": {
+      "type": "boolean",
+      "description": "True when cosign checked the Sigstore signature of checksums.txt."
+    },
+    "on_path": {
+      "type": "boolean"
+    }
+  }
+}

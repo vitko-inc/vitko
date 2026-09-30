@@ -1,0 +1,136 @@
+{
+  "schema": "vitko.runners.estimate/v1",
+  "prices_as_of": "2026-09-27",
+  "currency": "USD",
+  "rate_micros_per_minute": 2000,
+  "free_minutes_per_month": 2000,
+  "per_second_factor": 1,
+  "files": 1,
+  "rows_read": 1891,
+  "rows_ignored": 0,
+  "months": [
+    {
+      "month": "2026-08",
+      "movable_minutes": 51648,
+      "slot_minutes": 51648,
+      "free_minutes": 2000,
+      "github_gross_micros": 302900000,
+      "github_net_micros": 284900000,
+      "vitko_before_free_micros": 103296000,
+      "vitko_micros": 99296000
+    },
+    {
+      "month": "2026-09",
+      "movable_minutes": 53071,
+      "slot_minutes": 53071,
+      "free_minutes": 2000,
+      "github_gross_micros": 308772000,
+      "github_net_micros": 290772000,
+      "vitko_before_free_micros": 106142000,
+      "vitko_micros": 102142000
+    }
+  ],
+  "totals": {
+    "slot_minutes": 104719,
+    "github_gross_micros": 611672000,
+    "github_net_micros": 575672000,
+    "vitko_before_free_micros": 209438000,
+    "vitko_micros": 201438000,
+    "saving_vs_github_gross": 0.6576,
+    "saving_vs_github_gross_unavailable_reason": null,
+    "saving_vs_github_net": 0.6501,
+    "saving_vs_github_net_unavailable_reason": null
+  },
+  "by_class": [
+    {
+      "class": "linux_arm",
+      "movable": false,
+      "minutes": 4711,
+      "github_gross_micros": 23555000,
+      "github_net_micros": 23555000
+    },
+    {
+      "class": "linux_x64_1core",
+      "movable": true,
+      "minutes": 549,
+      "github_gross_micros": 1098000,
+      "github_net_micros": 1098000
+    },
+    {
+      "class": "linux_x64_2core",
+      "movable": true,
+      "minutes": 41502,
+      "github_gross_micros": 249012000,
+      "github_net_micros": 213012000
+    },
+    {
+      "class": "linux_x64_4core",
+      "movable": true,
+      "minutes": 16888,
+      "github_gross_micros": 202656000,
+      "github_net_micros": 202656000
+    },
+    {
+      "class": "linux_x64_8core",
+      "movable": true,
+      "minutes": 7223,
+      "github_gross_micros": 158906000,
+      "github_net_micros": 158906000
+    },
+    {
+      "class": "macos",
+      "movable": false,
+      "minutes": 1801,
+      "github_gross_micros": 111662000,
+      "github_net_micros": 111662000
+    },
+    {
+      "class": "windows",
+      "movable": false,
+      "minutes": 2082,
+      "github_gross_micros": 20820000,
+      "github_net_micros": 20820000
+    }
+  ],
+  "storage_stays_on_github": {
+    "gigabyte_hours": 110.61,
+    "github_gross_micros": 37167,
+    "github_net_micros": 37167
+  },
+  "not_movable": [
+    "linux_arm",
+    "macos",
+    "windows"
+  ],
+  "repositories": [
+    {
+      "repository": "acme-ai/infra",
+      "minutes": 17346
+    },
+    {
+      "repository": "acme-ai/agents",
+      "minutes": 17043
+    },
+    {
+      "repository": "acme-ai/web",
+      "minutes": 16621
+    },
+    {
+      "repository": "acme-ai/api",
+      "minutes": 15152
+    }
+  ],
+  "assumptions": [
+    "The Vitko figure is an upper bound: GitHub rounds each job up to whole minutes, and Vitko bills per second.",
+    "GitHub's 1-core Linux runners already cost $0.002/min on GitHub, so those minutes show no saving.",
+    "Larger Linux runners (4-core, 8-core) are counted as cores / 2 slots at $0.002 per slot-minute. Sizes above 2 vCPU / 8 GB are not on the price list, so treat these rows as an estimate.",
+    "Not offered on Vitko, so these stay on GitHub: linux_arm, macos, windows."
+  ],
+  "caveats": [
+    "This is an estimate from GitHub's own usage report, at list prices on both sides. It is not a quote or an invoice.",
+    "Job durations on Vitko may differ from durations on GitHub-hosted runners.",
+    "Minutes on runners other than Linux x64 stay on GitHub, and so does Actions storage.",
+    "Larger GitHub runners are counted as cores / 2 slots (a slot is up to 2 vCPU / 8 GB), rounded up.",
+    "Dated: GitHub prices are the ones applied in your report; the Vitko list price is $0.002 per slot-minute as of 2026-09-27."
+  ]
+}

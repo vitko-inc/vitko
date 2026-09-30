@@ -1,0 +1,53 @@
+# Release build: signed, reproducible archives for Linux and macOS.
+version: 2
+project_name: vitko
+
+builds:
+  - id: vitko
+    main: ./cmd/vitko
+    binary: vitko
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w
+      - -X github.com/vitko-inc/vitko/internal/version.Version={{ .Version }}
+      - -X github.com/vitko-inc/vitko/internal/version.Commit={{ .FullCommit }}
+      - -X github.com/vitko-inc/vitko/internal/version.Date={{ .CommitDate }}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - id: vitko
+    formats: [tar.gz]
+    # No version in the name, so .../releases/latest/download/<name> always works.
+    name_template: "vitko_{{ .Os }}_{{ .Arch }}"
+    files: [LICENSE, README.md]
+
+checksum:
+  name_template: checksums.txt
+
+sboms:
+  - artifacts: archive
+
+signs:
+  # Keyless Sigstore signature of checksums.txt, which covers every archive.
+  - cmd: cosign
+    artifacts: checksum
+    signature: "${artifact}.sigstore.json"
+    args: ["sign-blob", "--bundle=${signature}", "${artifact}", "--yes"]
+    output: true
+
+release:
+  github:
+    owner: vitko-inc
+    name: vitko
+  extra_files:
+    - glob: ./install.sh
+  footer: |
+    Install: `curl -fsSL https://github.com/vitko-inc/vitko/releases/download/{{ .Tag }}/install.sh | VITKO_VERSION={{ .Tag }} sh`
+    or `brew install vitko-inc/tap/vitko`. Verify with `vitko version`.
+
+changelog:
+  use: github-native

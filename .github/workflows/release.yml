@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the release
+      id-token: write # keyless signing
+      attestations: write # build provenance
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - run: go test ./...
+      - name: Disclosure scan
+        run: |
+          python3 .github/disclosure/scan.py
+          python3 .github/disclosure/scan.py --no-files --git-log HEAD
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - uses: anchore/sbom-action/download-syft@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
+      - uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+        with:
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            dist/*.tar.gz
+            dist/checksums.txt
+
+  verify:
+    needs: release
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: Install with install.sh (checksum and signature required)
+        run: |
+          curl -fsSL "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/install.sh" |
+            VITKO_VERSION="${GITHUB_REF_NAME}" VITKO_VERIFY=always VITKO_OUTPUT=json sh | tee install.json
+          grep -q '"signature_verified":true' install.json
+      - name: Version matches the tag
+        run: |
+          got=$("$HOME/.local/bin/vitko" version --output json | python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])')
+          test "v$got" = "${GITHUB_REF_NAME}"
+      - name: Build provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          os=$(uname -s | tr '[:upper:]' '[:lower:]'); arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+          gh release download "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" --pattern "vitko_${os}_${arch}.tar.gz"
+          gh attestation verify "vitko_${os}_${arch}.tar.gz" --repo "${GITHUB_REPOSITORY}"

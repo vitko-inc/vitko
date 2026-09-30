@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.help/v1",
+  "title": "Help",
+  "description": "The command tree: every command, its arguments, flags, output schema and error codes, plus the output contract and exit codes.",
+  "type": "object",
+  "required": [
+    "schema",
+    "cli",
+    "scope",
+    "output",
+    "exit_codes",
+    "error_codes",
+    "global_flags",
+    "commands"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.help/v1"
+    },
+    "cli": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ]
+    },
+    "scope": {
+      "type": "string",
+      "description": "The command path this help is for; empty for everything."
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "modes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "default_on_terminal": {
+          "type": "string"
+        },
+        "default_not_on_terminal": {
+          "type": "string"
+        },
+        "env": {
+          "type": "string"
+        },
+        "errors_on": {
+          "type": "string"
+        },
+        "error_schema": {
+          "type": "string"
+        },
+        "interactive": {
+          "type": "boolean"
+        },
+        "schema_id_pattern": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "exit_codes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "meaning": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "meaning"
+        ]
+      }
+    },
+    "error_codes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "exit_code": {
+            "type": "integer"
+          },
+          "meaning": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "exit_code",
+          "meaning"
+        ]
+      }
+    },
+    "global_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "description": "string, boolean, integer, number or string[] (repeatable, comma-separated)."
+          },
+          "enum": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "default": {},
+          "env": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "summary"
+        ]
+      }
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "variadic": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "name",
+                "required",
+                "variadic"
+              ]
+            }
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "string, boolean, integer, number or string[] (repeatable, comma-separated)."
+                },
+                "enum": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "default": {},
+                "env": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "type",
+                "summary"
+              ]
+            }
+          },
+          "mutates": {
+            "type": "boolean"
+          },
+          "idempotent": {
+            "type": "boolean"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Supports --dry-run."
+          },
+          "network": {
+            "type": "boolean",
+            "description": "May use the network."
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "output_schema": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "plugin": {
+            "type": "boolean",
+            "description": "A helper program found on PATH, run as a subcommand."
+          }
+        },
+        "required": [
+          "path",
+          "summary",
+          "args",
+          "flags",
+          "mutates",
+          "idempotent",
+          "dry_run",
+          "errors",
+          "plugin"
+        ]
+      }
+    }
+  }
+}

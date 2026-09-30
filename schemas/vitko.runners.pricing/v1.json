@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.pricing/v1",
+  "title": "Vitko Runners pricing",
+  "description": "The public price list, dated, with the GitHub price it is compared with.",
+  "type": "object",
+  "required": [
+    "schema",
+    "product",
+    "prices_as_of",
+    "currency",
+    "slot",
+    "price_micros_per_slot_minute",
+    "billing",
+    "free_minutes_per_month",
+    "comparison"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.pricing/v1"
+    },
+    "product": {
+      "type": "string"
+    },
+    "prices_as_of": {
+      "type": "string",
+      "format": "date"
+    },
+    "currency": {
+      "const": "USD"
+    },
+    "slot": {
+      "type": "object",
+      "properties": {
+        "runs_on": {
+          "type": "string"
+        },
+        "os": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string"
+        },
+        "vcpus_max": {
+          "type": "integer"
+        },
+        "memory_bytes_max": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "runs_on",
+        "vcpus_max",
+        "memory_bytes_max"
+      ],
+      "description": "The unit of capacity the price applies to."
+    },
+    "price_micros_per_slot_minute": {
+      "type": "integer",
+      "description": "USD micros (1 USD = 1,000,000)."
+    },
+    "billing": {
+      "type": "object",
+      "properties": {
+        "increment_seconds": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "increment_seconds"
+      ]
+    },
+    "free_minutes_per_month": {
+      "type": "integer"
+    },
+    "comparison": {
+      "type": "object",
+      "properties": {
+        "github_micros_per_minute": {
+          "type": "integer",
+          "description": "USD micros (1 USD = 1,000,000)."
+        },
+        "basis": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "format": "uri"
+        },
+        "ratio": {
+          "type": "string"
+        },
+        "prices_as_of": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": [
+        "github_micros_per_minute",
+        "basis",
+        "source",
+        "prices_as_of"
+      ]
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    }
+  }
+}

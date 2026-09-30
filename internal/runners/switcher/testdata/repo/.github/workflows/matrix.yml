@@ -1,0 +1,14 @@
+name: Matrix
+on: push
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: echo ${{ matrix.os }}
+  choose:
+    runs-on: ${{ github.event_name == 'push' && 'ubuntu-latest' || 'ubuntu-22.04' }}
+    steps:
+      - run: echo choose

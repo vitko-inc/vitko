@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.config-value/v1",
+  "title": "Setting",
+  "description": "One setting.",
+  "type": "object",
+  "required": [
+    "schema",
+    "key",
+    "value",
+    "source"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.config-value/v1"
+    },
+    "key": {
+      "type": "string"
+    },
+    "value": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "description": "Open enum: env, file, unset."
+    }
+  }
+}

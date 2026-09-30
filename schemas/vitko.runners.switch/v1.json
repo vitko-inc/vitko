@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.switch/v1",
+  "title": "Switch workflows",
+  "description": "What `vitko runners repos switch` changed, would change, or left alone.",
+  "type": "object",
+  "required": [
+    "schema",
+    "dry_run",
+    "changed",
+    "label",
+    "changes",
+    "skipped",
+    "already_switched",
+    "diff",
+    "pull_request"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.switch/v1"
+    },
+    "dry_run": {
+      "type": "boolean"
+    },
+    "check": {
+      "type": "boolean"
+    },
+    "changed": {
+      "type": "boolean",
+      "description": "True when files were written or a pull request was opened."
+    },
+    "label": {
+      "type": "string"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "job": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "file",
+          "job",
+          "line",
+          "from",
+          "to"
+        ]
+      }
+    },
+    "skipped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "job": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer"
+          },
+          "runs_on": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Open enum: expression, not_linux_x64, other_ubuntu_version, runner_group, self_hosted, label_set, unknown_label, reusable_workflow, yaml_alias, unparseable."
+          },
+          "hint": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "file",
+          "job",
+          "runs_on",
+          "reason"
+        ]
+      }
+    },
+    "already_switched": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "job": {
+            "type": "string"
+          },
+          "runs_on": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "file",
+          "job",
+          "runs_on"
+        ]
+      }
+    },
+    "diff": {
+      "type": "string",
+      "description": "Unified diff of the changes (empty when nothing changes)."
+    },
+    "pull_request": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "branch": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "base": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}
