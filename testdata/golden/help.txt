@@ -4,17 +4,31 @@ Usage:
   vitko <command> [flags]
 
 Commands:
-  config get            Show one setting.
-  config list           List your settings.
-  config set            Change one setting.
-  doctor                Check that vitko and the tools it uses are ready.
-  help                  Show help for vitko or a command.
-  runners estimate      Estimate what your GitHub Actions usage would cost on Vitko Runners.
-  runners pricing       Show the price list.
-  runners repos switch  Switch a repository's GitHub Actions jobs to Vitko runners.
-  schema list           List the JSON Schemas of vitko's output.
-  schema show           Print a JSON Schema (2020-12).
-  version               Show the version of vitko.
+  config get                   Show one setting.
+  config list                  List your settings.
+  config set                   Change one setting.
+  doctor                       Check that vitko and the tools it uses are ready.
+  help                         Show help for vitko or a command.
+  login                        Sign in to Vitko.
+  logout                       Sign out: end the stored sign-in and delete it.
+  orgs list                    List the organizations you can use.
+  runners estimate             Estimate what your GitHub Actions usage would cost on Vitko Runners.
+  runners jobs list            List jobs, newest first.
+  runners jobs show            Show one job.
+  runners limits ceiling set   Set the ceilings (an organization admin, signed in within 12 hours).
+  runners limits ceiling show  Show the ceilings tokens can't set limits above.
+  runners limits set           Set the spend limit or the number of jobs at once.
+  runners limits show          Show spend and concurrency limits, their ceilings, and what you may set.
+  runners pricing              Show the price list.
+  runners repos switch         Switch a repository's GitHub Actions jobs to Vitko runners.
+  runners usage                Show a month's minutes and cost, next to GitHub's list price.
+  schema list                  List the JSON Schemas of vitko's output.
+  schema show                  Print a JSON Schema (2020-12).
+  tokens create                Create an API token. It is shown once.
+  tokens list                  List the organization's API tokens.
+  tokens revoke                Revoke an API token.
+  version                      Show the version of vitko.
+  whoami                       Show who you're signed in as, and what you can do.
 
 Global flags:
   --output MODE          Output format. Default: text on a terminal, json otherwise. One of: text, json, ndjson. Env: VITKO_OUTPUT.

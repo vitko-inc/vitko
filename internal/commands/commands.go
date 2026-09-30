@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"net/http"
 	"os"
 	"os/exec"
 	"regexp"
@@ -34,6 +35,12 @@ type Env struct {
 	LookPath         func(string) (string, error)
 	Exec             sys.Exec
 	Now              func() time.Time
+	// HTTP calls the Vitko API (nil: a default client).
+	HTTP *http.Client
+	// Sleep waits between sign-in polls.
+	Sleep func(time.Duration)
+	// OpenBrowser opens a link for the person at the terminal (best effort).
+	OpenBrowser func(string) error
 }
 
 // DefaultEnv is the real process environment.
@@ -44,6 +51,7 @@ func DefaultEnv() Env {
 		Stdin: os.Stdin, Stdout: os.Stdout, Stderr: os.Stderr,
 		Getenv: os.Getenv, StdoutIsTerminal: tty,
 		LookPath: exec.LookPath, Exec: sys.RealExec, Now: time.Now,
+		HTTP: &http.Client{Timeout: 60 * time.Second}, Sleep: time.Sleep, OpenBrowser: openBrowser,
 	}
 }
 
@@ -64,6 +72,11 @@ func New(env Env) *cli.App {
 			{Path: []string{"runners", "repos"}, Summary: "Work with your repositories' workflows."},
 			{Path: []string{"schema"}, Summary: "The JSON Schemas of vitko's output."},
 			{Path: []string{"config"}, Summary: "Your vitko settings."},
+			{Path: []string{"orgs"}, Summary: "The organizations you can use."},
+			{Path: []string{"tokens"}, Summary: "Organization API tokens for agents and scripts."},
+			{Path: []string{"runners", "jobs"}, Summary: "Jobs that ran on Vitko runners."},
+			{Path: []string{"runners", "limits"}, Summary: "Spend and concurrency limits, and their ceilings."},
+			{Path: []string{"runners", "limits", "ceiling"}, Summary: "The ceilings API tokens and CI jobs can't set limits above."},
 		},
 	}
 	a.Commands = List(env)
@@ -72,7 +85,7 @@ func New(env Env) *cli.App {
 
 // List returns every command.
 func List(env Env) []*cli.Command {
-	return []*cli.Command{
+	cmds := []*cli.Command{
 		{
 			Path:        []string{"help"},
 			Summary:     "Show help for vitko or a command.",
@@ -136,6 +149,7 @@ func List(env Env) []*cli.Command {
 		estimateCmd(env),
 		switchCmd(env),
 	}
+	return append(cmds, APICommands(env)...)
 }
 
 func versionDoc() map[string]any {
@@ -758,4 +772,17 @@ func switchText(_ *cli.Ctx, w io.Writer, v any) error {
 		}
 	}
 	return nil
+}
+
+// openBrowser opens url with the platform's opener, without waiting.
+func openBrowser(url string) error {
+	name := "xdg-open"
+	if runtime.GOOS == "darwin" {
+		name = "open"
+	}
+	path, err := exec.LookPath(name)
+	if err != nil {
+		return err
+	}
+	return exec.Command(path, url).Start()
 }

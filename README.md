@@ -45,9 +45,16 @@ gh attestation verify vitko_linux_amd64.tar.gz --repo vitko-inc/vitko
 | `vitko runners pricing` | The public price list: $0.002 per minute per slot (up to 2 vCPU / 8 GB), billed per second, 2,000 free minutes a month, and the dated GitHub price it is compared with. |
 | `vitko runners estimate <file>...` | Reads GitHub's usage report (CSV, or the billing usage API's JSON) and shows what the Linux x64 minutes would cost on Vitko, next to what GitHub charged. Runs on your machine; nothing is uploaded. `--from-github <org>` fetches the report with the GitHub CLI. |
 | `vitko runners repos switch [<path>]` | Changes `runs-on: ubuntu-latest` / `ubuntu-24.04` to `vitko-ubuntu-24.04` in `.github/workflows`, keeping comments and formatting. Lists what it leaves alone and why. `--dry-run` shows the diff, `--check` exits 10 if anything would change, `--pr` opens a pull request with your own `git` and `gh` sign-in. |
+| `vitko login`, `vitko logout`, `vitko whoami` | Sign in from a terminal (open a link, check the code, approve), see who you are, sign out. |
+| `vitko orgs list` | The organizations you can use. |
+| `vitko tokens list/create/revoke` | Organization API tokens for agents and scripts. Creating and revoking needs an organization admin who signed in within the last 12 hours. |
+| `vitko runners jobs list/show` | Jobs that ran on Vitko runners, newest first, with filters and paging (`--all`). |
+| `vitko runners usage [--month YYYY-MM]` | A month's minutes and cost, next to GitHub's list price for the same jobs. |
+| `vitko runners limits show/set` | The spend limit and jobs at once. `set` states the target value; `--dry-run` checks it without changing anything. |
+| `vitko runners limits ceiling show/set` | Ceilings set by an organization admin: API tokens and CI jobs can set limits at or below them, and with no ceiling they can only lower limits. |
 | `vitko help [--json]` | Every command, flag, output schema, error code and exit code. |
 | `vitko schema list`, `vitko schema show <id>` | The JSON Schemas of the output. |
-| `vitko config list/get/set` | Settings, stored in `~/.config/vitko/config.json`. |
+| `vitko config list/get/set` | Settings (`output`, `org`), stored in `~/.config/vitko/config.json`. |
 | `vitko doctor` | Checks that vitko and the tools it uses (`git`, `gh`) are ready. |
 | `vitko version` | The version. |
 
@@ -72,6 +79,16 @@ Would switch 1 job(s) to vitko-ubuntu-24.04. Nothing was written.
 
 Jobs that are left alone, each with a reason: `runs-on` expressions and matrices, other operating systems and Arm, other Ubuntu versions, self-hosted runners, runner groups, custom or larger-runner labels, and workflows called from other repositories.
 
+## Signing in
+
+vitko uses the first of these it finds:
+
+1. **`VITKO_TOKEN`**: an organization API token (`vitko_pat_…`) from `vitko tokens create`. It works in one organization, with the scopes it was given. There is no `--token` flag, because flags end up in shell history and process lists.
+2. **Inside a GitHub Actions job**, no secret is needed. vitko exchanges the job's own ID token for a 15-minute one; add `permissions: id-token: write` to the job. By default a job can read its own repository's jobs. An organization admin can allow more with a CI trust rule.
+3. **`vitko login`**: your own sign-in, kept in `~/.config/vitko/credentials.json` (readable only by you) and renewed automatically. `vitko login --with-token` stores an API token instead.
+
+Pick an organization with `--org <login>`, `VITKO_ORG`, or `vitko config set org <login>`. If you belong to only one, it's used automatically.
+
 ## For agents and scripts
 
 - **Output**: `--output text|json|ndjson` (or `VITKO_OUTPUT`). The default is `text` on a terminal and `json` otherwise, so an agent gets JSON without asking. `--fields a,b.c` keeps only the fields you need.
@@ -89,7 +106,8 @@ Jobs that are left alone, each with a reason: `runs-on` expressions and matrices
 | 3 | Not signed in (for example the GitHub CLI) |
 | 4 | Not allowed |
 | 5 | Not found |
-| 6 | Conflict with the current state |
+| 6 | Conflict with the current state, for example a stale `--if-revision` |
+| 7 | A spend or concurrency limit, or its ceiling, stopped it |
 | 8 | Temporarily unavailable; safe to retry |
 | 10 | `--check`: changes would be made |
 

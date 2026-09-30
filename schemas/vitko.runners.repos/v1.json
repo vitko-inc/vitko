@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.repos/v1",
+  "title": "Repositories",
+  "description": "Repositories the Vitko Runners app can see.",
+  "type": "object",
+  "required": [
+    "schema",
+    "data"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.repos/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "repository_selection": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "all or selected."
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "full_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "full_name"
+        ]
+      }
+    },
+    "repos_unavailable_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

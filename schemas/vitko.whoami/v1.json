@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.whoami/v1",
+  "title": "Who am I",
+  "description": "The caller, the organizations it can use and its scopes there.",
+  "type": "object",
+  "required": [
+    "schema",
+    "kind",
+    "actor",
+    "orgs"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.whoami/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "kind": {
+      "type": "string",
+      "description": "Open enum: session, user (device login), token (API token), oidc (GitHub Actions job)."
+    },
+    "actor": {
+      "type": "string"
+    },
+    "user": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "login": {
+          "type": "string"
+        }
+      }
+    },
+    "token_id": {
+      "type": "string"
+    },
+    "orgs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "login": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "GitHub role for people (admin or member); null for tokens and CI jobs."
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "fast_path": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "login",
+          "scopes"
+        ]
+      }
+    },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Set when the credential reaches only these repositories' jobs."
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "signed_in_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "admin_actions_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Until when token, trust-rule and ceiling changes are allowed without signing in again."
+    }
+  }
+}

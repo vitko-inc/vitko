@@ -54,7 +54,11 @@
     },
     {
       "code": 6,
-      "meaning": "Conflict with the current state, for example a branch that already exists."
+      "meaning": "Conflict with the current state, for example a branch that already exists or a stale revision."
+    },
+    {
+      "code": 7,
+      "meaning": "A spend or concurrency limit, or its ceiling, stopped it."
     },
     {
       "code": 8,
@@ -67,14 +71,39 @@
   ],
   "error_codes": [
     {
+      "code": "access_denied",
+      "exit_code": 4,
+      "meaning": "The sign-in was denied in the browser."
+    },
+    {
       "code": "branch_exists",
       "exit_code": 6,
       "meaning": "The branch for the pull request already exists."
     },
     {
+      "code": "ceiling_not_set",
+      "exit_code": 7,
+      "meaning": "No ceiling is set, so tokens can only lower the limit."
+    },
+    {
+      "code": "expired_token",
+      "exit_code": 3,
+      "meaning": "The sign-in code expired before it was approved."
+    },
+    {
       "code": "file_not_found",
       "exit_code": 5,
       "meaning": "A file or directory doesn't exist."
+    },
+    {
+      "code": "forbidden",
+      "exit_code": 4,
+      "meaning": "Not allowed."
+    },
+    {
+      "code": "fresh_sign_in_required",
+      "exit_code": 4,
+      "meaning": "This needs a sign-in from the last 12 hours."
     },
     {
       "code": "github_forbidden",
@@ -97,6 +126,11 @@
       "meaning": "GitHub didn't answer. Safe to retry."
     },
     {
+      "code": "human_session_required",
+      "exit_code": 4,
+      "meaning": "Only an organization admin, signed in, can do this."
+    },
+    {
       "code": "input_required",
       "exit_code": 2,
       "meaning": "A required argument or flag is missing."
@@ -112,9 +146,19 @@
       "meaning": "An input file or value couldn't be read."
     },
     {
+      "code": "limit_above_ceiling",
+      "exit_code": 7,
+      "meaning": "The value is above the organization's ceiling."
+    },
+    {
       "code": "not_a_git_repository",
       "exit_code": 5,
       "meaning": "The path isn't inside a git repository."
+    },
+    {
+      "code": "not_found",
+      "exit_code": 5,
+      "meaning": "Not found, or not visible to you."
     },
     {
       "code": "plugin_not_installed",
@@ -122,14 +166,44 @@
       "meaning": "The helper program for this command isn't installed here."
     },
     {
+      "code": "revision_conflict",
+      "exit_code": 6,
+      "meaning": "The resource changed since the revision given."
+    },
+    {
       "code": "schema_not_found",
       "exit_code": 5,
       "meaning": "No schema has that id."
     },
     {
+      "code": "scope_missing",
+      "exit_code": 4,
+      "meaning": "The credential lacks the scope this needs."
+    },
+    {
+      "code": "signed_out",
+      "exit_code": 3,
+      "meaning": "Not signed in to Vitko."
+    },
+    {
+      "code": "token_expired",
+      "exit_code": 3,
+      "meaning": "The sign-in or token has expired."
+    },
+    {
+      "code": "token_invalid",
+      "exit_code": 3,
+      "meaning": "The token isn't valid (revoked, expired or mistyped)."
+    },
+    {
       "code": "tool_missing",
       "exit_code": 2,
       "meaning": "A program this command needs (git or gh) isn't installed."
+    },
+    {
+      "code": "unavailable",
+      "exit_code": 8,
+      "meaning": "The Vitko API is unavailable. Safe to retry."
     },
     {
       "code": "unknown_command",
@@ -311,6 +385,92 @@
       "plugin": false
     },
     {
+      "path": "login",
+      "summary": "Sign in to Vitko.",
+      "description": "Prints a link and a code; open the link, check the code and approve. The sign-in is kept in <config dir>/credentials.json (readable only by you) and renewed automatically. With --with-token, reads an API token from standard input instead. In GitHub Actions no sign-in is needed: vitko exchanges the job's own ID token.",
+      "args": [],
+      "flags": [
+        {
+          "name": "with-token",
+          "type": "boolean",
+          "summary": "Read an API token (vitko_pat_…) from standard input and store it."
+        },
+        {
+          "name": "no-browser",
+          "type": "boolean",
+          "summary": "Don't try to open the link in a browser."
+        }
+      ],
+      "mutates": true,
+      "idempotent": false,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.login/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable",
+        "access_denied",
+        "expired_token",
+        "input_required"
+      ],
+      "examples": [
+        "vitko login",
+        "printf %s \"$TOKEN\" | vitko login --with-token"
+      ],
+      "plugin": false
+    },
+    {
+      "path": "logout",
+      "summary": "Sign out: end the stored sign-in and delete it.",
+      "args": [],
+      "flags": [],
+      "mutates": true,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.logout/v1",
+      "errors": [
+        "usage",
+        "internal"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "orgs list",
+      "summary": "List the organizations you can use.",
+      "args": [],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.orgs/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
       "path": "runners estimate",
       "summary": "Estimate what your GitHub Actions usage would cost on Vitko Runners.",
       "description": "Reads GitHub's usage report and prices the Linux x64 minutes at the Vitko list price, next to what GitHub charged. It runs on your machine: the report is never uploaded.\nGet the report from GitHub: Settings > Billing and licensing > Usage > Get usage report (the summarized report is enough). Or pass --from-github to fetch it with the GitHub CLI (needs an organization owner or billing manager).\nEach month gets its own free minutes. The result is an upper bound, because GitHub rounds each job up to whole minutes and Vitko bills per second.",
@@ -368,6 +528,324 @@
         "vitko runners estimate usage-2026-08.csv usage-2026-09.csv --by-repo",
         "vitko runners estimate --from-github my-org --month 2026-08 --month 2026-09"
       ],
+      "plugin": false
+    },
+    {
+      "path": "runners jobs list",
+      "summary": "List jobs, newest first.",
+      "args": [],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        },
+        {
+          "name": "repo",
+          "type": "string",
+          "summary": "Only this repository's jobs."
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "summary": "Only jobs with this status (for example running, completed)."
+        },
+        {
+          "name": "since",
+          "type": "string",
+          "enum": [
+            "24h",
+            "7d",
+            "30d"
+          ],
+          "default": "7d",
+          "summary": "How far back."
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "default": 100,
+          "summary": "Jobs per page (1 to 1000)."
+        },
+        {
+          "name": "cursor",
+          "type": "string",
+          "summary": "Continue from a previous page's next_cursor."
+        },
+        {
+          "name": "all",
+          "type": "boolean",
+          "summary": "Fetch every page."
+        }
+      ],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.runners.jobs/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "runners jobs show",
+      "summary": "Show one job.",
+      "args": [
+        {
+          "name": "job",
+          "summary": "The job's id.",
+          "required": true,
+          "variadic": false
+        }
+      ],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        }
+      ],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.runners.job/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "runners limits ceiling set",
+      "summary": "Set the ceilings (an organization admin, signed in within 12 hours).",
+      "description": "API tokens and CI jobs can set limits at or below the ceilings. Only an organization admin who signed in recently can change them; tokens can't.",
+      "args": [],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        },
+        {
+          "name": "spend-usd",
+          "type": "number",
+          "summary": "The monthly amount in US dollars, after free minutes."
+        },
+        {
+          "name": "spend-micros",
+          "type": "integer",
+          "summary": "The same in micros of USD (1 USD = 1,000,000)."
+        },
+        {
+          "name": "no-spend-ceiling",
+          "type": "boolean",
+          "summary": "Remove the spend ceiling (tokens can then only lower the spend limit)."
+        },
+        {
+          "name": "concurrency",
+          "type": "integer",
+          "summary": "The most jobs at once a token may set."
+        },
+        {
+          "name": "no-concurrency-ceiling",
+          "type": "boolean",
+          "summary": "Remove the jobs-at-once ceiling."
+        },
+        {
+          "name": "if-revision",
+          "type": "integer",
+          "summary": "Only change them if the limits are still at this revision."
+        },
+        {
+          "name": "dry-run",
+          "type": "boolean",
+          "summary": "Check the change with the API without making it."
+        }
+      ],
+      "mutates": true,
+      "idempotent": true,
+      "dry_run": true,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.runners.ceiling/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable",
+        "usage",
+        "input_required",
+        "human_session_required",
+        "fresh_sign_in_required",
+        "revision_conflict"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "runners limits ceiling show",
+      "summary": "Show the ceilings tokens can't set limits above.",
+      "args": [],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        }
+      ],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.runners.ceiling/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "runners limits set",
+      "summary": "Set the spend limit or the number of jobs at once.",
+      "description": "States the target value; repeating it changes nothing. API tokens and CI jobs may lower a limit at any time and raise it only up to the ceiling an organization admin set; with no ceiling, only lower it. At the spend limit new jobs wait and running jobs finish.",
+      "args": [],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        },
+        {
+          "name": "spend-usd",
+          "type": "number",
+          "summary": "The monthly amount in US dollars, after free minutes."
+        },
+        {
+          "name": "spend-micros",
+          "type": "integer",
+          "summary": "The same in micros of USD (1 USD = 1,000,000)."
+        },
+        {
+          "name": "no-spend-limit",
+          "type": "boolean",
+          "summary": "Remove the spend limit."
+        },
+        {
+          "name": "concurrency",
+          "type": "integer",
+          "summary": "The most jobs that may run at once."
+        },
+        {
+          "name": "default-concurrency",
+          "type": "boolean",
+          "summary": "Go back to the default number of jobs at once."
+        },
+        {
+          "name": "if-revision",
+          "type": "integer",
+          "summary": "Only change the limits if they are still at this revision."
+        },
+        {
+          "name": "dry-run",
+          "type": "boolean",
+          "summary": "Check the change with the API without making it."
+        }
+      ],
+      "mutates": true,
+      "idempotent": true,
+      "dry_run": true,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.runners.limits/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable",
+        "usage",
+        "input_required",
+        "limit_above_ceiling",
+        "ceiling_not_set",
+        "revision_conflict"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "runners limits show",
+      "summary": "Show spend and concurrency limits, their ceilings, and what you may set.",
+      "args": [],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        }
+      ],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.runners.limits/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable"
+      ],
+      "examples": [],
       "plugin": false
     },
     {
@@ -477,6 +955,44 @@
       "plugin": false
     },
     {
+      "path": "runners usage",
+      "summary": "Show a month's minutes and cost, next to GitHub's list price.",
+      "args": [],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "summary": "The month (UTC). Default: this month."
+        }
+      ],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.runners.usage/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable",
+        "usage"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
       "path": "schema list",
       "summary": "List the JSON Schemas of vitko's output.",
       "args": [],
@@ -523,6 +1039,147 @@
       "plugin": false
     },
     {
+      "path": "tokens create",
+      "summary": "Create an API token. It is shown once.",
+      "description": "Needs an organization admin who signed in within the last 12 hours. Store the token as a secret and pass it as VITKO_TOKEN.",
+      "args": [],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "summary": "What the token is for."
+        },
+        {
+          "name": "scopes",
+          "type": "string[]",
+          "summary": "Scopes: runners:read, runners:jobs:write, runners:limits:write, runners:config:write, billing:read."
+        },
+        {
+          "name": "repos",
+          "type": "string[]",
+          "summary": "Limit the token to these repositories' jobs (owner/name)."
+        },
+        {
+          "name": "expires-in-days",
+          "type": "integer",
+          "default": 90,
+          "summary": "Days until the token stops working (1 to 365)."
+        },
+        {
+          "name": "dry-run",
+          "type": "boolean",
+          "summary": "Show what would be created without creating it."
+        }
+      ],
+      "mutates": true,
+      "idempotent": false,
+      "dry_run": true,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.token/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable",
+        "human_session_required",
+        "fresh_sign_in_required",
+        "input_required"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "tokens list",
+      "summary": "List the organization's API tokens.",
+      "args": [],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        }
+      ],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.tokens/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "tokens revoke",
+      "summary": "Revoke an API token.",
+      "description": "Needs an organization admin who signed in within the last 12 hours.",
+      "args": [
+        {
+          "name": "id",
+          "summary": "The token's id (tok_…).",
+          "required": true,
+          "variadic": false
+        }
+      ],
+      "flags": [
+        {
+          "name": "org",
+          "type": "string",
+          "env": "VITKO_ORG",
+          "summary": "The GitHub organization (login or numeric id). Default: the `org` setting, else your only organization."
+        },
+        {
+          "name": "dry-run",
+          "type": "boolean",
+          "summary": "Show what would be revoked without revoking it."
+        }
+      ],
+      "mutates": true,
+      "idempotent": true,
+      "dry_run": true,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.token/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable",
+        "human_session_required",
+        "fresh_sign_in_required"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
       "path": "version",
       "summary": "Show the version of vitko.",
       "args": [],
@@ -536,6 +1193,31 @@
       "errors": [
         "usage",
         "internal"
+      ],
+      "examples": [],
+      "plugin": false
+    },
+    {
+      "path": "whoami",
+      "summary": "Show who you're signed in as, and what you can do.",
+      "args": [],
+      "flags": [],
+      "mutates": false,
+      "idempotent": true,
+      "dry_run": false,
+      "network": true,
+      "scopes": [],
+      "output_schema": "vitko.whoami/v1",
+      "errors": [
+        "usage",
+        "internal",
+        "signed_out",
+        "token_expired",
+        "token_invalid",
+        "forbidden",
+        "scope_missing",
+        "not_found",
+        "unavailable"
       ],
       "examples": [],
       "plugin": false

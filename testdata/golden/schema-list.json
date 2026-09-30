@@ -2,6 +2,16 @@
   "schema": "vitko.schema-list/v1",
   "schemas": [
     {
+      "id": "vitko.audit/v1",
+      "title": "Audit trail",
+      "url": "https://runners.vitko.inc/schemas/vitko.audit/v1"
+    },
+    {
+      "id": "vitko.auth-token/v1",
+      "title": "Access token",
+      "url": "https://runners.vitko.inc/schemas/vitko.auth-token/v1"
+    },
+    {
       "id": "vitko.config-value/v1",
       "title": "Setting",
       "url": "https://runners.vitko.inc/schemas/vitko.config-value/v1"
@@ -10,6 +20,11 @@
       "id": "vitko.config/v1",
       "title": "Settings",
       "url": "https://runners.vitko.inc/schemas/vitko.config/v1"
+    },
+    {
+      "id": "vitko.device-authorization/v1",
+      "title": "Device authorization",
+      "url": "https://runners.vitko.inc/schemas/vitko.device-authorization/v1"
     },
     {
       "id": "vitko.doctor/v1",
@@ -37,9 +52,44 @@
       "url": "https://runners.vitko.inc/schemas/vitko.install/v1"
     },
     {
+      "id": "vitko.login-pending/v1",
+      "title": "Sign-in waiting for approval",
+      "url": "https://runners.vitko.inc/schemas/vitko.login-pending/v1"
+    },
+    {
+      "id": "vitko.login/v1",
+      "title": "Signed in",
+      "url": "https://runners.vitko.inc/schemas/vitko.login/v1"
+    },
+    {
+      "id": "vitko.logout/v1",
+      "title": "Signed out",
+      "url": "https://runners.vitko.inc/schemas/vitko.logout/v1"
+    },
+    {
+      "id": "vitko.oidc-trust-rule/v1",
+      "title": "CI trust rule",
+      "url": "https://runners.vitko.inc/schemas/vitko.oidc-trust-rule/v1"
+    },
+    {
+      "id": "vitko.oidc-trust/v1",
+      "title": "CI trust rules",
+      "url": "https://runners.vitko.inc/schemas/vitko.oidc-trust/v1"
+    },
+    {
+      "id": "vitko.orgs/v1",
+      "title": "Organizations",
+      "url": "https://runners.vitko.inc/schemas/vitko.orgs/v1"
+    },
+    {
       "id": "vitko.plan/v1",
       "title": "Plan",
       "url": "https://runners.vitko.inc/schemas/vitko.plan/v1"
+    },
+    {
+      "id": "vitko.runners.ceiling/v1",
+      "title": "Ceilings",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.ceiling/v1"
     },
     {
       "id": "vitko.runners.estimate/v1",
@@ -47,9 +97,44 @@
       "url": "https://runners.vitko.inc/schemas/vitko.runners.estimate/v1"
     },
     {
+      "id": "vitko.runners.job-failure/v1",
+      "title": "Job failure",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.job-failure/v1"
+    },
+    {
+      "id": "vitko.runners.job/v1",
+      "title": "Job",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.job/v1"
+    },
+    {
+      "id": "vitko.runners.jobs/v1",
+      "title": "Jobs",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.jobs/v1"
+    },
+    {
+      "id": "vitko.runners.limits/v1",
+      "title": "Limits",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.limits/v1"
+    },
+    {
       "id": "vitko.runners.pricing/v1",
       "title": "Vitko Runners pricing",
       "url": "https://runners.vitko.inc/schemas/vitko.runners.pricing/v1"
+    },
+    {
+      "id": "vitko.runners.repos/v1",
+      "title": "Repositories",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.repos/v1"
+    },
+    {
+      "id": "vitko.runners.statement/v1",
+      "title": "Statement",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.statement/v1"
+    },
+    {
+      "id": "vitko.runners.status/v1",
+      "title": "Status",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.status/v1"
     },
     {
       "id": "vitko.runners.switch/v1",
@@ -57,14 +142,34 @@
       "url": "https://runners.vitko.inc/schemas/vitko.runners.switch/v1"
     },
     {
+      "id": "vitko.runners.usage/v1",
+      "title": "Usage",
+      "url": "https://runners.vitko.inc/schemas/vitko.runners.usage/v1"
+    },
+    {
       "id": "vitko.schema-list/v1",
       "title": "Schema list",
       "url": "https://runners.vitko.inc/schemas/vitko.schema-list/v1"
     },
     {
+      "id": "vitko.token/v1",
+      "title": "API token",
+      "url": "https://runners.vitko.inc/schemas/vitko.token/v1"
+    },
+    {
+      "id": "vitko.tokens/v1",
+      "title": "API tokens",
+      "url": "https://runners.vitko.inc/schemas/vitko.tokens/v1"
+    },
+    {
       "id": "vitko.version/v1",
       "title": "Version",
       "url": "https://runners.vitko.inc/schemas/vitko.version/v1"
+    },
+    {
+      "id": "vitko.whoami/v1",
+      "title": "Who am I",
+      "url": "https://runners.vitko.inc/schemas/vitko.whoami/v1"
     }
   ]
 }

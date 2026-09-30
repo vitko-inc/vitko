@@ -18,7 +18,11 @@
       "const": true
     },
     "would_succeed": {
-      "type": "boolean"
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "null when the check only happens at the real change."
     },
     "changes": {
       "type": "array",
@@ -44,7 +48,31 @@
       "type": [
         "object",
         "null"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "field": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requested": {},
+        "ceiling": {},
+        "current": {}
+      }
+    },
+    "would_succeed_unavailable_reason": {
+      "type": [
+        "string",
+        "null"
       ]
+    },
+    "revision": {
+      "type": "integer",
+      "description": "The revision the plan was checked against."
     }
   }
 }

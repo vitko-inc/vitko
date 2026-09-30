@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.limits/v1",
+  "title": "Limits",
+  "description": "Spend and concurrency limits, their ceilings, and what the caller may set.",
+  "type": "object",
+  "required": [
+    "schema",
+    "data"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.limits/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "spend_limit_micros": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "USD micros (1 USD = 1,000,000); null means none."
+        },
+        "spend_ceiling_micros": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "USD micros (1 USD = 1,000,000); null means none."
+        },
+        "concurrency_cap": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "concurrency_ceiling": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "default_concurrency": {
+          "type": "integer"
+        },
+        "max_concurrency": {
+          "type": "integer"
+        },
+        "revision": {
+          "type": "integer"
+        },
+        "new_jobs": {
+          "type": "string",
+          "description": "Open enum: start, wait."
+        },
+        "waiting_reason": {
+          "type": "string"
+        },
+        "month": {
+          "type": "string"
+        },
+        "month_paid_micros": {
+          "type": "integer"
+        },
+        "running_jobs": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "what_happens_at_the_limit": {
+          "type": "string"
+        },
+        "can_raise_to": {
+          "type": "object",
+          "properties": {
+            "spend_limit_micros": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "USD micros (1 USD = 1,000,000); null means none."
+            },
+            "concurrency_cap": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "description": "The highest values the caller may set now (null spend: no limit)."
+        },
+        "changed": {
+          "type": "boolean",
+          "description": "Present on changes: false when the values were already as asked."
+        }
+      },
+      "required": [
+        "revision"
+      ]
+    }
+  }
+}

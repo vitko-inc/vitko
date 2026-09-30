@@ -21,6 +21,7 @@ type Key struct {
 // Keys are the settings vitko understands.
 var Keys = []Key{
 	{Name: "output", Summary: "Default output format when --output and VITKO_OUTPUT are not set.", Enum: []string{"text", "json", "ndjson"}},
+	{Name: "org", Summary: "Default GitHub organization (login or numeric id) when --org and VITKO_ORG are not set."},
 }
 
 // FindKey returns the key named n.

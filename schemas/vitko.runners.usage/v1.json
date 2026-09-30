@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.usage/v1",
+  "title": "Usage",
+  "description": "A month's minutes and cost, next to GitHub's list price for the same jobs.",
+  "type": "object",
+  "required": [
+    "schema",
+    "month",
+    "data"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.usage/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "month": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "month": {
+          "type": "string"
+        },
+        "time_zone": {
+          "type": "string"
+        },
+        "jobs": {
+          "type": "integer"
+        },
+        "billed_seconds": {
+          "type": "integer"
+        },
+        "github_minutes": {
+          "type": "integer"
+        },
+        "rate_micros_per_minute": {
+          "type": "integer"
+        },
+        "gross_micros": {
+          "type": "integer"
+        },
+        "free_minutes": {
+          "type": "integer"
+        },
+        "free_micros": {
+          "type": "integer"
+        },
+        "paid_micros": {
+          "type": "integer"
+        },
+        "github_list_micros": {
+          "type": "integer"
+        },
+        "saved_micros": {
+          "type": "integer"
+        },
+        "projected_paid_micros": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "repositories": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "days": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "description": "More fields may appear."
+    }
+  }
+}

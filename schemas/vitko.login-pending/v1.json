@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.login-pending/v1",
+  "title": "Sign-in waiting for approval",
+  "description": "Printed on stderr by `vitko login` (JSON modes): open the link, check the code, approve.",
+  "type": "object",
+  "required": [
+    "schema",
+    "verification_uri_complete",
+    "user_code",
+    "expires_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.login-pending/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verification_uri": {
+      "type": "string"
+    },
+    "verification_uri_complete": {
+      "type": "string"
+    },
+    "user_code": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

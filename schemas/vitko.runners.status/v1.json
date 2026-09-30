@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runners.vitko.inc/schemas/vitko.runners.status/v1",
+  "title": "Status",
+  "description": "An organization's status: limits, repositories and the caller's access.",
+  "type": "object",
+  "required": [
+    "schema",
+    "org",
+    "caller"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vitko.runners.status/v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "org": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "fast_path": {
+          "type": "boolean"
+        }
+      }
+    },
+    "caller": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "actor": {
+          "type": "string"
+        },
+        "role": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "limits": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "limits_unavailable_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "repos": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "repos_unavailable_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}
