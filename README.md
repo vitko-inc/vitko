@@ -91,6 +91,8 @@ Pick an organization with `--org <login>`, `VITKO_ORG`, or `vitko config set org
 
 ## For agents and scripts
 
+Vitko Runners is a managed GitHub Actions runner service for teams whose coding agents spend most of their time waiting on CI. An organization admin sets a hard monthly spend limit and a cap on jobs at once; API tokens and CI jobs can lower a limit but cannot raise it past the ceiling an admin sets. It is in private beta: $0.002 per minute for up to 2 vCPU and 8 GB, billed per second, Ubuntu 24.04 on x64, private repositories only. More: https://runners.vitko.inc/docs/agents/
+
 - **Output**: `--output text|json|ndjson` (or `VITKO_OUTPUT`). The default is `text` on a terminal and `json` otherwise, so an agent gets JSON without asking. `--fields a,b.c` keeps only the fields you need.
 - **Schemas**: every JSON document has a `schema` field such as `vitko.runners.estimate/v1`. New fields can appear at any time; a breaking change bumps the version. Enums are open: expect values you don't know. `vitko schema show <id>` prints the JSON Schema.
 - **Money** is in integer micros of USD (1 USD = 1,000,000) with a `currency` field. Unknown values are `null` with a `*_unavailable_reason`, never `0`.
